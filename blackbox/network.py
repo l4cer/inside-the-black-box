@@ -1,8 +1,12 @@
 import numpy as np
 
-from typing import Callable
+from typing import Any, Callable
 
 from blackbox.layer import Layer
+
+
+class DimensionMismatch(Exception):
+    pass
 
 
 class Network:
@@ -21,6 +25,17 @@ class Network:
         self.loss_func = loss_func
         self.loss_prime = loss_prime
 
+    def dimension_compatibility(self, shape_inputs: Any) -> Any:
+        for index, layer in enumerate(self.layers):
+            valid, shape_inputs = layer.dimension_compatibility(shape_inputs)
+
+            if not valid:
+                raise DimensionMismatch(
+                    f"{layer} at layer {index} is not " +
+                    f"consistent with the previous layer")
+
+        return shape_inputs
+
     def predict(self, inputs: np.ndarray) -> np.ndarray:
         output = inputs
         for layer in self.layers:
@@ -37,6 +52,13 @@ class Network:
             loss = 0.0
 
             for inputs, outputs in zip(inputs_train, outputs_train):
+                shape_outputs = self.dimension_compatibility(np.shape(inputs))
+
+                if shape_outputs != np.shape(outputs):
+                    raise DimensionMismatch(
+                        f"network output {shape_outputs} and training output " +
+                        f"{np.shape(outputs)} have different dimensions")
+
                 prediction = self.predict(inputs)
 
                 loss += self.loss_func(outputs, prediction)

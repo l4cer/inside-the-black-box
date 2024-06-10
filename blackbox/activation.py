@@ -1,11 +1,19 @@
 import numpy as np
 
+from typing import Any, Tuple
+
 from blackbox.layer import Layer
 
 
 class Activation(Layer):
     def __init__(self) -> None:
         super().__init__()
+
+    def init_randomly(self) -> None:
+        pass
+
+    def dimension_compatibility(self, shape_inputs: Any) -> Tuple[bool, Any]:
+        return True, shape_inputs
 
     def activation_func(self, inputs: np.ndarray) -> np.ndarray:
         raise NotImplementedError
@@ -24,8 +32,11 @@ class Activation(Layer):
 
         return self.activation_prime(self.inputs) * derivative_outputs
 
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}()"
 
-class ReLuActivation(Activation):
+
+class ReluActivation(Activation):
     def __init__(self) -> None:
         super().__init__()
 
