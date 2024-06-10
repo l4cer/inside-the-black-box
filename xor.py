@@ -6,6 +6,8 @@ from blackbox.activation import TanhActivation
 
 from blackbox.network import Network
 
+from blackbox.utils import save_network, load_network
+
 
 def loss_func(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     return np.mean(np.power(y_true - y_pred, 2))
@@ -15,7 +17,7 @@ def loss_prime(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     return 2 * (y_pred - y_true) / len(y_true)
 
 
-def main() -> None:
+def save() -> None:
     net = Network()
 
     net.add(FullyConnected(2, 3))
@@ -30,9 +32,21 @@ def main() -> None:
 
     net.train(x_train, y_train, epochs=1000, learning_rate=0.1)
 
+    save_network(net, "xor.pickle")
+
+    for x, y in zip(x_train, y_train):
+        print(f"true: {y}   pred: {net.predict(x)}")
+
+
+def load() -> None:
+    net = load_network("xor.pickle")
+
+    x_train = np.array([[[0, 0]], [[0, 1]], [[1, 0]], [[1, 1]]])
+    y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
+
     for x, y in zip(x_train, y_train):
         print(f"true: {y}   pred: {net.predict(x)}")
 
 
 if __name__ == "__main__":
-    main()
+    save()
