@@ -1,8 +1,10 @@
 import numpy as np
 
-from typing import Any, Callable
+from typing import Any, Dict, Callable, Generator
 
 from blackbox.layer import Layer
+
+from blackbox.dataset import Dataset
 
 
 class DimensionMismatch(Exception):
@@ -43,15 +45,20 @@ class Network:
 
         return output
 
-    def train(self, inputs_train: np.ndarray,
-                    outputs_train: np.ndarray,
+    def train(self, dataset: Dataset,
                     epochs: int,
-                    learning_rate: float) -> None:
+                    learning_rate: float) -> Generator[Dict[str, Any], None, None]:
 
         for epoch in range(epochs):
-            loss = 0.0
+            info = {
+                "epoch": epoch,
+                "epochs": epochs,
+                "loss_test": 0.0,
+                "loss_train": 0.0
+            }
 
-            for inputs, outputs in zip(inputs_train, outputs_train):
+            # Network training
+            for inputs, outputs in dataset.get_train_data():
                 shape_outputs = self.dimension_compatibility(np.shape(inputs))
 
                 if shape_outputs != np.shape(outputs):
@@ -61,12 +68,27 @@ class Network:
 
                 prediction = self.predict(inputs)
 
-                loss += self.loss_func(outputs, prediction)
+                info["loss_train"] += self.loss_func(outputs, prediction)
                 derivative = self.loss_prime(outputs, prediction)
 
                 for layer in reversed(self.layers):
                     derivative = layer.backward_propagation(derivative, learning_rate)
 
-            loss = loss / len(inputs_train)   # Mean loss
+            info["loss_train"] = info["loss_train"] / dataset.size_train
 
-            print(f"Epoch {epoch+1}/{epochs}   loss={loss:.6f}")
+            # Network testing
+            for inputs, outputs in dataset.get_test_data():
+                shape_outputs = self.dimension_compatibility(np.shape(inputs))
+
+                if shape_outputs != np.shape(outputs):
+                    raise DimensionMismatch(
+                        f"network output {shape_outputs} and testing output " +
+                        f"{np.shape(outputs)} have different dimensions")
+
+                prediction = self.predict(inputs)
+
+                info["loss_test"] += self.loss_func(outputs, prediction)
+
+            info["loss_test"] = info["loss_test"] / dataset.size_train
+
+            yield info

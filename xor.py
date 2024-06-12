@@ -4,6 +4,8 @@ from blackbox.layer import FullyConnected
 
 from blackbox.activation import TanhActivation
 
+from blackbox.dataset import Dataset
+
 from blackbox.network import Network
 
 from blackbox.utils import save_network, load_network
@@ -26,16 +28,27 @@ def save() -> None:
     net.add(TanhActivation())
 
     net.use(loss_func, loss_prime)
+    
+    dataset = Dataset()
 
-    x_train = np.array([[[0, 0]], [[0, 1]], [[1, 0]], [[1, 1]]])
-    y_train = np.array([[[0]], [[1]], [[1]], [[0]]])
+    dataset.test = {
+        "inputs": np.array([[[0, 0]], [[0, 1]], [[1, 0]], [[1, 1]]]),
+        "outputs": np.array([[[0]], [[1]], [[1]], [[0]]])
+    }
 
-    net.train(x_train, y_train, epochs=1000, learning_rate=0.1)
+    dataset.train = {
+        "inputs": np.array([[[0, 0]], [[0, 1]], [[1, 0]], [[1, 1]]]),
+        "outputs": np.array([[[0]], [[1]], [[1]], [[0]]])
+    }
+
+    for info in net.train(dataset, epochs=1000, learning_rate=0.1):
+        epoch, epochs, loss_test, loss_train = info.values()
+
+        print(f"Epoch {epoch+1}/{epochs}", end="   ")
+        print(f"loss_train={loss_train:.6f}", end="   ")
+        print(f"loss_test={loss_test:.6f}")
 
     save_network(net, "xor.pickle")
-
-    for x, y in zip(x_train, y_train):
-        print(f"true: {y}   pred: {net.predict(x)}")
 
 
 def load() -> None:
