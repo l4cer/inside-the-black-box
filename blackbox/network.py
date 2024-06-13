@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Any, Dict, Callable, Generator
+from typing import Any, Dict, Tuple, Callable, Generator
 
 from blackbox.layer import Layer
 
@@ -27,11 +27,11 @@ class Network:
         self.loss_func = loss_func
         self.loss_prime = loss_prime
 
-    def dimension_compatibility(self, shape_inputs: Any) -> Any:
+    def dimension_compatibility(self, shape_inputs: Tuple[int]) -> Tuple[int]:
         for index, layer in enumerate(self.layers):
-            valid, shape_inputs = layer.dimension_compatibility(shape_inputs)
+            shape_inputs = layer.dimension_compatibility(shape_inputs)
 
-            if not valid:
+            if shape_inputs is None:
                 raise DimensionMismatch(
                     f"{layer} at layer {index} is not " +
                     f"consistent with the previous layer")
@@ -69,10 +69,10 @@ class Network:
                 prediction = self.predict(inputs)
 
                 info["loss_train"] += self.loss_func(outputs, prediction)
-                derivative = self.loss_prime(outputs, prediction)
+                gradient = self.loss_prime(outputs, prediction)
 
                 for layer in reversed(self.layers):
-                    derivative = layer.backward_propagation(derivative, learning_rate)
+                    gradient = layer.backward_propagation(gradient, learning_rate)
 
             info["loss_train"] = info["loss_train"] / dataset.size_train
 

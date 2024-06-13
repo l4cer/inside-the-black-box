@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Any, Tuple
+from typing import Tuple
 
 from blackbox.layer import Layer
 
@@ -12,8 +12,8 @@ class Activation(Layer):
     def init_randomly(self) -> None:
         pass
 
-    def dimension_compatibility(self, shape_inputs: Any) -> Tuple[bool, Any]:
-        return True, shape_inputs
+    def dimension_compatibility(self, shape_inputs: Tuple[int]) -> Tuple[int]:
+        return shape_inputs
 
     def activation_func(self, inputs: np.ndarray) -> np.ndarray:
         raise NotImplementedError
@@ -27,10 +27,10 @@ class Activation(Layer):
 
         return self.outputs
 
-    def backward_propagation(self, derivative_outputs: np.ndarray,
+    def backward_propagation(self, gradient_outputs: np.ndarray,
                                    learning_rate: float) -> np.ndarray:
 
-        return self.activation_prime(self.inputs) * derivative_outputs
+        return self.activation_prime(self.inputs) * gradient_outputs
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}()"
