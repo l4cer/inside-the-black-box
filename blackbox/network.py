@@ -27,7 +27,7 @@ class Network:
         self.loss_func = loss_func
         self.loss_prime = loss_prime
 
-    def dimension_compatibility(self, shape_inputs: Tuple[int]) -> Tuple[int]:
+    def dimension_compatibility(self, shape_inputs: Tuple[int, ...]) -> Tuple[int, ...]:
         for index, layer in enumerate(self.layers):
             shape_inputs = layer.dimension_compatibility(shape_inputs)
 

@@ -54,4 +54,4 @@ def load() -> None:
 
 
 if __name__ == "__main__":
-    save()
+    load()

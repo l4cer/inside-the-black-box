@@ -1,6 +1,6 @@
 from blackbox.layer import FullyConnected
 
-from blackbox.activation import ReluActivation
+from blackbox.activation import ReLUActivation
 from blackbox.activation import TanhActivation
 from blackbox.activation import SigmoidActivation
 
