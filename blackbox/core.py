@@ -1,3 +1,5 @@
+from blackbox.optimizer import GradientDescent
+
 from blackbox.layer import FullyConnected
 
 from blackbox.activation import ReLUActivation

@@ -6,6 +6,8 @@ from blackbox.layer import Layer
 
 from blackbox.dataset import Dataset
 
+from blackbox.optimizer import Optimizer
+
 
 class DimensionMismatch(Exception):
     pass
@@ -47,7 +49,7 @@ class Network:
 
     def train(self, dataset: Dataset,
                     epochs: int,
-                    learning_rate: float) -> Generator[Dict[str, Any], None, None]:
+                    optimizer: Optimizer) -> Generator[Dict[str, Any], None, None]:
 
         for epoch in range(epochs):
             info = {
@@ -72,7 +74,7 @@ class Network:
                 gradient = self.loss_prime(outputs, prediction)
 
                 for layer in reversed(self.layers):
-                    gradient = layer.backward_propagation(gradient, learning_rate)
+                    gradient = layer.backward_propagation(gradient, optimizer)
 
             info["loss_train"] = info["loss_train"] / dataset.size_train
 
@@ -89,6 +91,6 @@ class Network:
 
                 info["loss_test"] += self.loss_func(outputs, prediction)
 
-            info["loss_test"] = info["loss_test"] / dataset.size_train
+            info["loss_test"] = info["loss_test"] / dataset.size_test
 
             yield info

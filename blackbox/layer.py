@@ -2,6 +2,8 @@ import numpy as np
 
 from typing import Tuple, Union
 
+from blackbox.optimizer import Optimizer
+
 
 class Layer:
     """
@@ -68,7 +70,7 @@ class Layer:
         raise NotImplementedError
 
     def backward_propagation(self, gradient_outputs: np.ndarray,
-                                   learning_rate: float) -> np.ndarray:
+                                   optimizer: Optimizer) -> np.ndarray:
         """
         Performs backward propagation to adjust the parameters of the layer.
 
@@ -76,8 +78,8 @@ class Layer:
         ----------
         gradient_outputs : np.ndarray
             The gradient of the errors with respect to the layer's outputs.
-        learning_rate : float
-            The learning rate to be used for adjusting the parameters.
+        optimizer : Optimizer
+            The iterative optimizer for updating the learnable parameters.
 
         Returns
         -------
@@ -134,7 +136,7 @@ class FullyConnected(Layer):
 
     def __init__(self, num_inputs: int, num_outputs: int) -> None:
         """
-        Initializes a new instance of the FullyConnected class.
+        Initializes a new instance of the FullyConnected layer.
 
         Parameters
         ----------
@@ -169,14 +171,14 @@ class FullyConnected(Layer):
         return self.outputs
 
     def backward_propagation(self, gradient_outputs: np.ndarray,
-                                   learning_rate: float) -> np.ndarray:
+                                   optimizer: Optimizer) -> np.ndarray:
 
         gradient_inputs = gradient_outputs @ self.weights.T
         gradient_weights = self.inputs.T @ gradient_outputs
 
-        # Update parameters by gradient descent
-        self.biases -= learning_rate * gradient_outputs
-        self.weights -= learning_rate * gradient_weights
+        # Updates the parameters in place
+        optimizer.update(self.biases, gradient_outputs)
+        optimizer.update(self.weights, gradient_weights)
 
         return gradient_inputs
 

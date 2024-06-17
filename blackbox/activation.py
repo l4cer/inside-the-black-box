@@ -4,6 +4,8 @@ from typing import Tuple, Union
 
 from blackbox.layer import Layer
 
+from blackbox.optimizer import Optimizer
+
 
 class Activation(Layer):
     """
@@ -80,9 +82,9 @@ class Activation(Layer):
         return self.outputs
 
     def backward_propagation(self, gradient_outputs: np.ndarray,
-                                   learning_rate: float) -> np.ndarray:
+                                   optimizer: Optimizer) -> np.ndarray:
 
-        # Learning rate is not used because there is no "learnable" parameters
+        # Optimizer is not used because there is no "learnable" parameters
         return self.activation_prime(self.inputs) * gradient_outputs
 
 

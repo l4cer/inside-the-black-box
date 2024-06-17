@@ -33,7 +33,9 @@ def save() -> None:
         "outputs": np.array([[[0]], [[1]], [[1]], [[0]]])
     }
 
-    for info in net.train(dataset, epochs=1000, learning_rate=0.1):
+    optimizer = GradientDescent(learning_rate=0.05, momentum=0.7)
+
+    for info in net.train(dataset, epochs=1000, optimizer=optimizer):
         epoch, epochs, loss_test, loss_train = info.values()
 
         print(f"Epoch {epoch+1}/{epochs}", end="   ")
@@ -54,4 +56,5 @@ def load() -> None:
 
 
 if __name__ == "__main__":
+    save()
     load()
