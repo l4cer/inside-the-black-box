@@ -88,7 +88,7 @@ class Activation(Layer):
         return self.activation_prime(self.inputs) * gradient_outputs
 
 
-class ReLUActivation(Activation):
+class ReLU(Activation):
     """
     A ReLU (Rectified Linear Unit) activation layer in a neural network.
 
@@ -116,7 +116,7 @@ class ReLUActivation(Activation):
         return 1.0 * (inputs > 0.0)
 
 
-class TanhActivation(Activation):
+class Tanh(Activation):
     """
     A hyperbolic tangent activation layer in a neural network.
 
@@ -145,7 +145,7 @@ class TanhActivation(Activation):
         return 1.0 - np.power(np.tanh(inputs), 2)
 
 
-class SigmoidActivation(Activation):
+class Sigmoid(Activation):
     """
     A sigmoid activation layer in a neural network.
 

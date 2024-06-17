@@ -40,9 +40,9 @@ class Optimizer:
         raise NotImplementedError
 
 
-class GradientDescent(Optimizer):
+class SGD(Optimizer):
     """
-    Gradient descent optimizer with optional momentum and dampening.
+    Stochastic gradient descent optimizer with optional momentum and dampening.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ class GradientDescent(Optimizer):
                        momentum: float = 0,
                        dampening: float = 0) -> None:
         """
-        Initializes a new instance of the GradientDescent optimizer.
+        Initializes a new instance of the SGD optimizer.
 
         Parameters
         ----------

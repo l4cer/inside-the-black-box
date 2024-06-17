@@ -1,14 +1,14 @@
-from blackbox.optimizer import GradientDescent
+from blackbox.network import Network
 
 from blackbox.layer import FullyConnected
 
-from blackbox.activation import ReLUActivation
-from blackbox.activation import TanhActivation
-from blackbox.activation import SigmoidActivation
+from blackbox.activation import ReLU
+from blackbox.activation import Tanh
+from blackbox.activation import Sigmoid
 
 from blackbox.dataset import Dataset
 
-from blackbox.network import Network
+from blackbox.optimizer import SGD
 
 from blackbox.utils import save_network
 from blackbox.utils import load_network
