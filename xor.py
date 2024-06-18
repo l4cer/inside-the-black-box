@@ -33,7 +33,7 @@ def save() -> None:
         "outputs": np.array([[[0]], [[1]], [[1]], [[0]]])
     }
 
-    optimizer = SGD(learning_rate=0.05, momentum=0.7)
+    optimizer = BGD(batch_size=4, learning_rate=0.08, momentum=0.7)
 
     for info in net.train(dataset, epochs=1000, optimizer=optimizer):
         epoch, epochs, loss_test, loss_train = info.values()

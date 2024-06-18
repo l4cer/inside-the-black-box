@@ -9,6 +9,7 @@ from blackbox.activation import Sigmoid
 from blackbox.dataset import Dataset
 
 from blackbox.optimizer import SGD
+from blackbox.optimizer import BGD
 
 from blackbox.utils import save_network
 from blackbox.utils import load_network
