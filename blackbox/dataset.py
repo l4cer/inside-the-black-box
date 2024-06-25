@@ -1,3 +1,5 @@
+import numpy as np
+
 from typing import Any, Generator, Tuple
 
 
@@ -5,12 +7,6 @@ class Dataset:
     def __init__(self) -> None:
         self.test = {"inputs": None, "outputs": None}
         self.train = {"inputs": None, "outputs": None}
-
-    def load_from_file(self, filename: str,
-                             train_ratio: float,
-                             test_ratio: float) -> None:
-
-        pass
 
     @property
     def size_test(self) -> int:
@@ -28,6 +24,11 @@ class Dataset:
 
     def get_train_data(self) -> Generator[Tuple[Any, Any], None, None]:
         dataset = self.train
+
+        permutation = np.random.permutation(self.size_train)
+
+        dataset["inputs"] = dataset["inputs"][permutation]
+        dataset["outputs"] = dataset["outputs"][permutation]
 
         for inputs, outputs in zip(dataset["inputs"], dataset["outputs"]):
             yield inputs, outputs

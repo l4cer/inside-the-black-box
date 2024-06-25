@@ -1,4 +1,9 @@
+import os
+import sys
+
 import numpy as np
+
+sys.path.insert(0, os.path.abspath(__file__).rsplit("projects", maxsplit=1)[0])
 
 from blackbox.core import *
 
@@ -20,7 +25,7 @@ def save() -> None:
     net.add(Tanh())
 
     net.use(loss_func, loss_prime)
-    
+
     dataset = Dataset()
 
     dataset.test = {
